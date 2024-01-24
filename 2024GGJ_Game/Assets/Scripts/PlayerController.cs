@@ -3,31 +3,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
+    PlayerController Instance;
     Rigidbody2D rb;
     bool initialized;
 
     [Header("Movement variables")]
-    Vector2 desiredSpeed;
-    bool canMove = true;
     [SerializeField] float speed;
     [SerializeField] float acceleration;
+    Vector2 moveDirection;
+    Vector2 lookDirection;
+    bool canMove = true;
 
-    [Header("SLap Variables")]
+    [Header("Slap Variables")]
     [SerializeField] float slapRange;
     [SerializeField] float slapOffset;
     [SerializeField] LayerMask slapLayers;
 
     [Header("Interact Variables")]
-    float InteractableCheckTimer;
-    [SerializeField] IInteractable closestInteractable;
     [SerializeField, Range(0, 0.3f)] float interactableCheckTime = 0.15f;
     [SerializeField] float interactRange = 10;
-    [SerializeField] Collider2D[] interactables = new Collider2D[8];
     [SerializeField] LayerMask interactableLayers;
+    [SerializeField] Collider2D[] interactables = new Collider2D[8];
+    List<IInteractable> activeInteractables = new List<IInteractable>();
+    IInteractable closestInteractable;
+    float InteractableCheckTimer;
 
+    [Header("Pickable Variables")]
+    [SerializeField] Pickable currentPickable;
+    [SerializeField] Transform pickableTransform;
+    [SerializeField] float throwForce;
+
+
+    private void Awake()
+    {
+        if (Instance == null) { Instance = this; }
+        else if (Instance != null) { Destroy(gameObject); }
+    }
 
     void Start()
     {
@@ -44,22 +59,34 @@ public class PlayerController : MonoBehaviour
     {
         if (!initialized) Initialize();
         SetRigidbodyVelocity();
+        CheckClosestInteractableTimer();
         Slap();
         Interact();
+        pickedObject();
     }
 
+    
     private void SetRigidbodyVelocity()
     {
         if (InputReader.Instance == null) return;
         if (!canMove) return;
-        Vector2 moveDirection = InputReader.MoveDirection;
+        moveDirection = InputReader.MoveDirection;
+        if (moveDirection != Vector2.zero) lookDirection = moveDirection;
         rb.velocity = Vector2.MoveTowards(rb.velocity, moveDirection * speed, acceleration * Time.deltaTime);
+        
     }
 
     void Slap()
     {
         if (!InputReader.Slap) return;
         InputReader.Slap = false;
+
+        if (currentPickable != null)
+        {
+            currentPickable.Drop(lookDirection * throwForce);
+            currentPickable = null;
+            CheckClosestInteractable();
+        }
         Collider2D[] slapTargets = Physics2D.OverlapCircleAll((Vector2)transform.position + (InputReader.MoveDirection * slapOffset), slapRange, slapLayers);
         foreach (var target in slapTargets)
         {
@@ -70,29 +97,42 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void CheckClosestInteractable()
+    void CheckClosestInteractableTimer()
     {
         if (InteractableCheckTimer < 0)
         {
+            CheckClosestInteractable();
             InteractableCheckTimer = interactableCheckTime;
-            Physics2D.OverlapCircleNonAlloc(transform.position, interactRange, interactables, interactableLayers);
-            float distance = Mathf.Infinity;
-            foreach (var target in interactables)
-            {
-                if (target.TryGetComponent(out IInteractable interactable))
-                {
-                    float targetDis = Vector2.Distance((Vector2)transform.position, (Vector2)target.transform.position);
-                    if (targetDis < distance)
-                    {
-                        closestInteractable = interactable;
-                        distance = targetDis;
-                    }
-                }
-            }
         }
         else
         {
             InteractableCheckTimer -= Time.deltaTime;
+        }
+    }
+    void CheckClosestInteractable()
+    {
+        activeInteractables.Clear();
+        Physics2D.OverlapCircleNonAlloc(transform.position, interactRange, interactables, interactableLayers);
+        foreach (var target in interactables)
+        {
+            if (target != null)
+            {
+                if (target.TryGetComponent(out IInteractable interactable))
+                {
+                    if (interactable.CanBeInteracted()) activeInteractables.Add(interactable);
+                }
+            }
+        }
+
+        foreach (IInteractable activeInteractable in activeInteractables)
+        {
+            float distance = Mathf.Infinity;
+            float targetDis = Vector2.Distance((Vector2)transform.position, (Vector2)activeInteractable.gameObject.transform.position);
+            if (targetDis < distance)
+            {
+                closestInteractable = activeInteractable;
+                distance = targetDis;
+            }
         }
     }
 
@@ -101,8 +141,19 @@ public class PlayerController : MonoBehaviour
         if (!InputReader.Interact) return;
         InputReader.Interact = false;
         if (closestInteractable == null) return;
-        closestInteractable.Interact();
+        closestInteractable.Interact(this);
+    }
 
+    public void PickObject(Pickable objectToPick)
+    {
+        if (currentPickable != null) currentPickable.Drop(lookDirection);
+        currentPickable = objectToPick;
+    }
+
+    void pickedObject()
+    {
+        if (currentPickable == null) return;
+        currentPickable.transform.position = pickableTransform.position;
     }
 
 
