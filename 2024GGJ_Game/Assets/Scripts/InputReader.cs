@@ -6,9 +6,7 @@ using UnityEngine.InputSystem;
 public class InputReader : MonoBehaviour
 {
     public static InputReader Instance;
-    InputActions _inputs;
-    [SerializeField] Camera _mainCamera;
-    PlayerController _player;
+    PlayerInputs _inputs;
 
     public static bool Interact;
     public static bool Slap;
@@ -21,22 +19,15 @@ public class InputReader : MonoBehaviour
     {
         if (Instance == null) { Instance = this; }
         else if (Instance != null) { Destroy(gameObject); }
-        _inputs = new InputActions();
-        _player = FindObjectOfType<PlayerController>();
-
+        _inputs = new PlayerInputs();
     }
-
-    private void Start()
-    {
-        if (_mainCamera == null) _mainCamera = Camera.main;
-    }
-
     private void Update()
     {
         _moveDirection = MoveDirection;
     }
     private void OnEnable()
     {
+        Debug.Log("enabling inputs");
         _inputs.Enable();
         _inputs.Player.Movement.performed += OnMovementPerformed;
         _inputs.Player.Movement.canceled += OnMovementCanceled;
@@ -53,6 +44,7 @@ public class InputReader : MonoBehaviour
 
     private void OnDisable()
     {
+
         _inputs.Player.Movement.performed -= OnMovementPerformed;
         _inputs.Player.Movement.canceled -= OnMovementCanceled;
 
@@ -65,20 +57,21 @@ public class InputReader : MonoBehaviour
         _inputs.Player.Pause.performed -= OnPausePerformed;
         _inputs.Player.Pause.canceled -= OnPauseCanceled;
         _inputs.Disable();
+        Debug.Log("Disabling inputs");
     }
 
     #region Interact
-    private void OnInteractPerformed(InputAction.CallbackContext context) { Interact = true; }
+    private void OnInteractPerformed(InputAction.CallbackContext context) { Debug.Log("Interact performed"); Interact = true; }
     private void OnInteractCanceled(InputAction.CallbackContext context) { Interact = false; }
     #endregion Interact
     #region Slap
     private void OnSlapCanceled(InputAction.CallbackContext context) { Slap = false; }
 
-    private void OnSlapPerformed(InputAction.CallbackContext context) { Slap = true; }
+    private void OnSlapPerformed(InputAction.CallbackContext context) { Debug.Log("Slap performed"); Slap = true; }
     #endregion Slap
     #region Movement
     private void OnMovementCanceled(InputAction.CallbackContext context) { MoveDirection = Vector2.zero; }
-    private void OnMovementPerformed(InputAction.CallbackContext context) { MoveDirection = context.ReadValue<Vector2>(); }
+    private void OnMovementPerformed(InputAction.CallbackContext context) { Debug.Log("move performed"); MoveDirection = context.ReadValue<Vector2>(); }
     #endregion Movement
 
     #region Pause
