@@ -14,7 +14,6 @@ public class InputReader : MonoBehaviour
     public static Vector2 MoveDirection;
     [SerializeField] Vector2 _moveDirection;
 
-
     private void Awake()
     {
         if (Instance == null) { Instance = this; }
@@ -44,7 +43,6 @@ public class InputReader : MonoBehaviour
 
     private void OnDisable()
     {
-
         _inputs.Player.Movement.performed -= OnMovementPerformed;
         _inputs.Player.Movement.canceled -= OnMovementCanceled;
 

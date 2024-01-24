@@ -6,7 +6,8 @@ using UnityEngine.Playables;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody2D rb;
+    Rigidbody rb;
+    Transform playerAvatar;
     bool initialized;
 
     [Header("Movement variables")]
@@ -15,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float acceleration;
 
-    [Header("SLap Variables")]
+    [Header("Slap Variables")]
     [SerializeField] float slapRange;
     [SerializeField] float slapOffset;
     [SerializeField] LayerMask slapLayers;
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] IInteractable closestInteractable;
     [SerializeField, Range(0, 0.3f)] float interactableCheckTime = 0.15f;
     [SerializeField] float interactRange = 10;
-    [SerializeField] Collider2D[] interactables = new Collider2D[8];
+    [SerializeField] Collider[] interactables = new Collider[8];
     [SerializeField] LayerMask interactableLayers;
 
 
@@ -36,16 +37,27 @@ public class PlayerController : MonoBehaviour
 
     void Initialize()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
+        playerAvatar = GetComponent<Transform>();
         initialized = true;
     }
 
     void Update()
     {
         if (!initialized) Initialize();
-        SetRigidbodyVelocity();
+
+        Vector2 moveDirection = InputReader.MoveDirection;
+
+        if (moveDirection.x != 0) { 
+            playerAvatar.localScale = new Vector2(Mathf.Sign(moveDirection.x), 1);
+        }
         Slap();
         Interact();
+    }
+
+    private void FixedUpdate()
+    {
+        SetRigidbodyVelocity();
     }
 
     private void SetRigidbodyVelocity()
@@ -75,7 +87,7 @@ public class PlayerController : MonoBehaviour
         if (InteractableCheckTimer < 0)
         {
             InteractableCheckTimer = interactableCheckTime;
-            Physics2D.OverlapCircleNonAlloc(transform.position, interactRange, interactables, interactableLayers);
+            //Physics2D.OverlapCircleNonAlloc(transform.position, interactRange, interactables, interactableLayers);
             float distance = Mathf.Infinity;
             foreach (var target in interactables)
             {
