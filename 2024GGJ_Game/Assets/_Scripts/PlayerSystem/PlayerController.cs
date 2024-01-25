@@ -8,7 +8,8 @@ using static UnityEngine.GraphicsBuffer;
 public class PlayerController : MonoBehaviour
 {
     PlayerController Instance;
-    Rigidbody2D rb;
+    Rigidbody rb;
+    Transform playerAvatar;
     bool initialized;
 
     [Header("Movement variables")]
@@ -51,21 +52,34 @@ public class PlayerController : MonoBehaviour
 
     void Initialize()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
+        playerAvatar = GetComponent<Transform>();
         initialized = true;
     }
 
     void Update()
     {
         if (!initialized) Initialize();
-        SetRigidbodyVelocity();
+        SetRigidbodyTransform();
         CheckClosestInteractableTimer();
         Slap();
         Interact();
         pickedObject();
     }
 
-    
+    private void FixedUpdate()
+    {
+        SetRigidbodyVelocity();
+    }
+
+    private void SetRigidbodyTransform() {
+        moveDirection = InputReader.MoveDirection;
+        if (moveDirection.x != 0)
+        {
+            playerAvatar.localScale = new Vector2(Mathf.Sign(moveDirection.x), 1);
+        }
+    }
+
     private void SetRigidbodyVelocity()
     {
         if (InputReader.Instance == null) return;
@@ -73,7 +87,7 @@ public class PlayerController : MonoBehaviour
         moveDirection = InputReader.MoveDirection;
         if (moveDirection != Vector2.zero) lookDirection = moveDirection;
         rb.velocity = Vector2.MoveTowards(rb.velocity, moveDirection * speed, acceleration * Time.deltaTime);
-        
+    
     }
 
     void Slap()
