@@ -28,7 +28,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0, 0.3f)] float interactableCheckTime = 0.15f;
     [SerializeField] float interactRange = 10;
     [SerializeField] LayerMask interactableLayers;
-    [SerializeField] Collider2D[] interactables = new Collider2D[8];
     List<IInteractable> activeInteractables = new List<IInteractable>();
     IInteractable closestInteractable;
     float InteractableCheckTimer;
@@ -64,7 +63,6 @@ public class PlayerController : MonoBehaviour
         CheckClosestInteractableTimer();
         Slap();
         Interact();
-        pickedObject();
     }
 
     private void FixedUpdate()
@@ -72,11 +70,12 @@ public class PlayerController : MonoBehaviour
         SetRigidbodyVelocity();
     }
 
-    private void SetRigidbodyTransform() {
+    private void SetRigidbodyTransform()
+    {
         moveDirection = InputReader.MoveDirection;
         if (moveDirection.x != 0)
         {
-            playerAvatar.localScale = new Vector2(Mathf.Sign(moveDirection.x), 1);
+            playerAvatar.localScale = new Vector3(Mathf.Sign(moveDirection.x), 1, 1);
         }
     }
 
@@ -87,7 +86,7 @@ public class PlayerController : MonoBehaviour
         moveDirection = InputReader.MoveDirection;
         if (moveDirection != Vector2.zero) lookDirection = moveDirection;
         rb.velocity = Vector2.MoveTowards(rb.velocity, moveDirection * speed, acceleration * Time.deltaTime);
-    
+
     }
 
     void Slap()
@@ -97,9 +96,7 @@ public class PlayerController : MonoBehaviour
 
         if (currentPickable != null)
         {
-            currentPickable.Drop(lookDirection * throwForce);
-            currentPickable = null;
-            CheckClosestInteractable();
+            DropObject();
         }
         Collider2D[] slapTargets = Physics2D.OverlapCircleAll((Vector2)transform.position + (InputReader.MoveDirection * slapOffset), slapRange, slapLayers);
         foreach (var target in slapTargets)
@@ -117,30 +114,30 @@ public class PlayerController : MonoBehaviour
         {
             CheckClosestInteractable();
             InteractableCheckTimer = interactableCheckTime;
+            Debug.Log("Checking Interactables");
         }
         else
         {
             InteractableCheckTimer -= Time.deltaTime;
         }
     }
+
     void CheckClosestInteractable()
     {
         activeInteractables.Clear();
-        Physics2D.OverlapCircleNonAlloc(transform.position, interactRange, interactables, interactableLayers);
+        var interactables = Physics.OverlapSphere(transform.position, interactRange, interactableLayers);
         foreach (var target in interactables)
         {
-            if (target != null)
+            Debug.Log("Target = " + target.name);
+            if (target.TryGetComponent(out IInteractable interactable))
             {
-                if (target.TryGetComponent(out IInteractable interactable))
-                {
-                    if (interactable.CanBeInteracted()) activeInteractables.Add(interactable);
-                }
+                if (interactable.CanBeInteracted()) activeInteractables.Add(interactable);
             }
         }
-
+        closestInteractable = null;
+        float distance = Mathf.Infinity;
         foreach (IInteractable activeInteractable in activeInteractables)
         {
-            float distance = Mathf.Infinity;
             float targetDis = Vector2.Distance((Vector2)transform.position, (Vector2)activeInteractable.gameObject.transform.position);
             if (targetDis < distance)
             {
@@ -162,12 +159,14 @@ public class PlayerController : MonoBehaviour
     {
         if (currentPickable != null) currentPickable.Drop(lookDirection);
         currentPickable = objectToPick;
+        currentPickable.Pick(pickableTransform);
     }
 
-    void pickedObject()
+    void DropObject()
     {
-        if (currentPickable == null) return;
-        currentPickable.transform.position = pickableTransform.position;
+        currentPickable.Drop(lookDirection * throwForce);
+        currentPickable = null;
+        CheckClosestInteractable();
     }
 
 
