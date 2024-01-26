@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Emperor : MonoBehaviour
@@ -12,6 +14,26 @@ public class Emperor : MonoBehaviour
     private int rotationDirection = 1; // 1 for clockwise, -1 for counterclockwise
     private bool isWaiting = false;
 
+    [Header("Treasure Setting")]
+    [SerializeField] private float visionRange = 10.0f;
+    [SerializeField] private LayerMask treasureLayer;
+    private List<Transform> treasures = new List<Transform>();
+
+    [Header("Fan Shaped Area for Sight")]
+    [SerializeField] private int numberOfRays = 10; 
+    [SerializeField] private LayerMask obstacleLayer;
+
+
+    private void Start()
+    {
+        // Initialize the list of treasures
+        GameObject[] treasureObjects = GameObject.FindGameObjectsWithTag("Treasure");
+        foreach (var treasure in treasureObjects)
+        {
+            treasures.Add(treasure.transform);
+        }
+    }
+
     void Update()
     {
         if (!playerDetected && !isWaiting)
@@ -22,6 +44,8 @@ public class Emperor : MonoBehaviour
         {
             RotateTowardsPlayer();
         }
+
+        CheckTreasures();
     }
 
     void RotateBackAndForth()
@@ -61,7 +85,28 @@ public class Emperor : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, angleToPlayer), rotationSpeed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void CheckTreasures()
+    {
+        foreach (Transform treasure in treasures)
+        {
+            Vector3 directionToTreasure = treasure.position - transform.position;
+            if (Vector3.Angle(transform.forward, directionToTreasure) < maxRotationAngle / 2) // Check if within field of view
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, directionToTreasure, out hit, visionRange, treasureLayer))
+                {
+                    if (hit.transform != treasure) // If the ray did not hit the expected treasure
+                    {
+                        Debug.Log("Danger");
+                        // You can break out of the loop if you only want to log once per frame
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
@@ -70,7 +115,7 @@ public class Emperor : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {

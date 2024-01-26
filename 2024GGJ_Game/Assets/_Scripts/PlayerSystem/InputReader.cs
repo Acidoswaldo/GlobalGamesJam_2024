@@ -17,7 +17,7 @@ public class InputReader : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) { Instance = this; }
-        else if (Instance != null) { Destroy(gameObject); }
+        //else if (Instance != null) { Destroy(gameObject); }
         _inputs = new PlayerInputs();
     }
     private void Update()
