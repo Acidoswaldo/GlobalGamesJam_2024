@@ -46,7 +46,7 @@ public class CraftTable : MonoBehaviour
 
         if (currentClothIndex < clothesPrefabs.Count)
         {
-            Instantiate(clothesPrefabs[currentClothIndex], playerController.transform.position + Vector3.right, Quaternion.identity);
+            Instantiate(clothesPrefabs[currentClothIndex], playerController.transform.position + Vector3.left, Quaternion.identity);
             currentClothIndex++;
             Debug.Log("Created");
         }
