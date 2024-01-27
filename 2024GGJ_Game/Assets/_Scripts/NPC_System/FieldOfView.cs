@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
+using System.Collections.Generic;
 
-public class FieldOfView : MonoBehaviour
+public class FieldOfVision : MonoBehaviour
 {
     public float viewRadius;
     [Range(0, 360)]
@@ -13,24 +11,13 @@ public class FieldOfView : MonoBehaviour
     public LayerMask obstacleMask;
 
     public MeshFilter viewMeshFilter;
-    private Mesh viewMesh;
+    Mesh viewMesh;
 
     void Start()
     {
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
-
-        StartCoroutine("FindTargetsWithDelay", .2f);
-    }
-
-    IEnumerator FindTargetsWithDelay(float delay)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(delay);
-            FindVisibleTargets();
-        }
     }
 
     void LateUpdate()
@@ -38,31 +25,12 @@ public class FieldOfView : MonoBehaviour
         DrawFieldOfView();
     }
 
-    void FindVisibleTargets()
-    {
-        Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
-
-        for (int i = 0; i < targetsInViewRadius.Length; i++)
-        {
-            Transform target = targetsInViewRadius[i].transform;
-            Vector3 dirToTarget = (target.position - transform.position).normalized;
-            if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
-            {
-                float dstToTarget = Vector3.Distance(transform.position, target.position);
-                if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
-                {
-                    // Target is visible and not obscured
-                    // Perform your logic here, e.g., Debug.Log("Target in sight");
-                }
-            }
-        }
-    }
-
     void DrawFieldOfView()
     {
-        int stepCount = Mathf.RoundToInt(viewAngle * 100);
+        int stepCount = Mathf.RoundToInt(viewAngle);
         float stepAngleSize = viewAngle / stepCount;
         List<Vector3> viewPoints = new List<Vector3>();
+
         for (int i = 0; i <= stepCount; i++)
         {
             float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
