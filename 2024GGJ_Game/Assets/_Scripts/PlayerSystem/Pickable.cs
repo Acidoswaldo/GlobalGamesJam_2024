@@ -19,6 +19,8 @@ public class Pickable : MonoBehaviour, IInteractable
     [SerializeField] Vector3 pickedScale;
     [SerializeField] float scaleSpeed = 5;
 
+    [SerializeField] private GameObject missingPrefab;
+
     private void Start()
     {
         Initialize();
@@ -67,6 +69,11 @@ public class Pickable : MonoBehaviour, IInteractable
         rb.excludeLayers = everythingMask;
         transform.rotation = playerTarget.rotation;
         rb.angularVelocity = Vector3.zero;
+
+        if (missingPrefab != null)
+        {
+            GameObject missingObject = Instantiate(missingPrefab, transform.position, Quaternion.identity);
+        }
     }
 
     public void Drop(Vector3 force, bool applyUpForce = true)

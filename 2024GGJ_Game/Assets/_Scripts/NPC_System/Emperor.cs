@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.Rendering;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class Emperor : MonoBehaviour
@@ -12,15 +11,25 @@ public class Emperor : MonoBehaviour
     private Transform playerTransform;
     private bool playerDetected = false;
     [SerializeField] private float currentRotationAngle = -90.0f;
-    private int rotationDirection = 1; 
+    private int rotationDirection = 1;
     private bool isWaiting = false;
 
+    [Header("Detect Treasures")]
     [SerializeField] private LineRenderer lineRenderer;
-    [SerializeField] private LayerMask treasureLayer; 
-    [SerializeField] private float rayLength = 10f; 
+    [SerializeField] private LayerMask treasureLayer;
+    [SerializeField] private float rayLength = 10f;
     private bool isDetectingTreasure = true;
-    [SerializeField] private List<GameObject> treasures;
+    private float lastReduceTime = 0.0f; 
+    [SerializeField] private float reduceCooldown = 5.0f;
     [SerializeField] private Material missingMaterial;
+
+    [Header("Entertainment Variables")]
+    [SerializeField] private Slider entertainmentSlider;
+    [SerializeField] private float entertainmentDuration = 10.0f;
+    private float currentEntertainmentTime;
+
+    [Header("Implement")]
+    [SerializeField] private GameEventSystem gameEventSystem;
 
     private void Start()
     {
@@ -42,6 +51,20 @@ public class Emperor : MonoBehaviour
         else if (playerDetected)
         {
             RotateTowardsPlayer();
+        }
+
+        if (playerDetected && entertainmentSlider != null)
+        {
+            if (currentEntertainmentTime > 0)
+            {
+                currentEntertainmentTime -= Time.deltaTime;
+                entertainmentSlider.value = currentEntertainmentTime / entertainmentDuration;
+                Debug.Log($"currentEntertainmentTime: {currentEntertainmentTime}, Slider Value: {entertainmentSlider.value}");
+            }
+            else
+            {
+                RotateBackAndForth();
+            }
         }
     }
 
@@ -68,7 +91,7 @@ public class Emperor : MonoBehaviour
     private IEnumerator WaitRandomTime()
     {
         isWaiting = true;
-        float waitTime = Random.Range(1f, 3f); 
+        float waitTime = Random.Range(1f, 3f);
         yield return new WaitForSeconds(waitTime);
         isWaiting = false;
     }
@@ -80,6 +103,10 @@ public class Emperor : MonoBehaviour
         Vector3 directionToPlayer = -(playerTransform.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+        if (lineRenderer != null)
+        {
+            lineRenderer.enabled = false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -98,33 +125,57 @@ public class Emperor : MonoBehaviour
         {
             playerDetected = false;
             playerTransform = null;
-            isDetectingTreasure = true; 
+            isDetectingTreasure = true;
+
+            if (lineRenderer != null)
+            {
+                lineRenderer.enabled = true;
+            }
         }
     }
 
     void DetectTreasure()
     {
+        if (!isDetectingTreasure) return;
+
         Vector3 direction = -transform.forward;
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, direction, out hit, rayLength, treasureLayer))
         {
-            Debug.Log("Get Treasure");
             GameObject hitObject = hit.collider.gameObject;
-            if (treasures.Contains(hitObject))
+            Renderer renderer = hitObject.GetComponent<Renderer>();
+            if (renderer != null && renderer.sharedMaterial == missingMaterial)
             {
-                Renderer renderer = hitObject.GetComponent<Renderer>();
-                if (renderer != null && renderer.sharedMaterial == missingMaterial)
+                if (gameEventSystem != null && Time.time - lastReduceTime >= reduceCooldown)
                 {
-                    Debug.Log("Danger");
+                    gameEventSystem.ReduceTime(20.0f);
+                    lastReduceTime = Time.time; 
                 }
             }
         }
+        DrawLine(direction);
+    }
 
+
+
+    void DrawLine(Vector3 direction) {
         if (lineRenderer != null)
         {
             lineRenderer.SetPosition(0, transform.position);
             lineRenderer.SetPosition(1, transform.position + direction * rayLength);
         }
+    }
+
+    public void StartEntertainment()
+    {
+        currentEntertainmentTime = entertainmentDuration;
+        entertainmentSlider.gameObject.SetActive(true);
+        entertainmentSlider.value = 1.0f;
+    }
+
+    public void StopEntertainment()
+    {
+        entertainmentSlider.gameObject.SetActive(false);
     }
 }

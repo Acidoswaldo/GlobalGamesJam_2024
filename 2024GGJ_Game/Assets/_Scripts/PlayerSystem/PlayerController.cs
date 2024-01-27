@@ -43,6 +43,9 @@ public class PlayerController : MonoBehaviour
     [Header("Entretaining Variables")]
     public bool entretaining;
 
+    [Header("Emperor Variables")]
+    [SerializeField] private Emperor emperor;
+
 
     private void Awake()
     {
@@ -87,14 +90,13 @@ public class PlayerController : MonoBehaviour
         if (entretaining)
         {
             canMove = false;
-            Debug.Log("Entretaining");
-
+            Debug.Log("Entertaining");
+            emperor.StartEntertainment();
         }
         else
         {
             canMove = true;
-            Debug.Log("not Entretaining");
-
+            emperor.StopEntertainment();
         }
     }
 
