@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/Emma_Needed/UI_MainMenu.unity
+    path: Assets/_Scenes/MainMenu.unity
     guid: af93f28c15b07ce4fb85166c8800bb4d
   - enabled: 1
     path: Assets/_Scenes/Emma_Needed/UI_LevelSelect.unity
