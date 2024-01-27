@@ -68,7 +68,7 @@ public class FieldOfVision : MonoBehaviour
 
         if (Physics.Raycast(transform.position, dir, out hit, viewRadius, obstacleMask))
         {
-            return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
+            return new ViewCastInfo(true, new Vector3(hit.point.x, transform.position.y, hit.point.z), hit.distance, globalAngle);
         }
         else
         {

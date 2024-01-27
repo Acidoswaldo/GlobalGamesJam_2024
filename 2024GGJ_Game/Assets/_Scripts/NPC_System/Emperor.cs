@@ -10,8 +10,8 @@ public class Emperor : MonoBehaviour
     [SerializeField] private float minRotationAngle = -180.0f;
     private Transform playerTransform;
     private bool playerDetected = false;
-    private float currentRotationAngle = -90.0f;
-    private int rotationDirection = 1; // 1 for clockwise, -1 for counterclockwise
+    [SerializeField] private float currentRotationAngle = -90.0f;
+    private int rotationDirection = 1; 
     private bool isWaiting = false;
 
     [Header("Treasure Setting")]
@@ -61,7 +61,7 @@ public class Emperor : MonoBehaviour
             StartCoroutine(WaitRandomTime());
         }
 
-        transform.rotation = Quaternion.Euler(0, 0, currentRotationAngle);
+        transform.rotation = Quaternion.Euler(0, currentRotationAngle, 0);
     }
 
     private IEnumerator WaitRandomTime()
