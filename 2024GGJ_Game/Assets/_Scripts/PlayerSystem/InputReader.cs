@@ -11,12 +11,14 @@ public class InputReader : MonoBehaviour
     bool Pause;
     Vector2 MoveDirection;
     [SerializeField] PlayerController controller;
+    [SerializeField] PlayerController otherController;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         var players = GameManager.Instance.GetPlayers();
         var index = playerInput.playerIndex;
+        if(index == 0) { GameManager.Instance.SetDeviceIndex(index); otherController = players[index + 1]; }
         controller = players[index];
     }
     #region Interact
@@ -51,5 +53,45 @@ public class InputReader : MonoBehaviour
         Debug.Log("Pause performed"); Pause = true;
     }
     #endregion Pause
+
+
+    #region alt Interact
+    public void OnAltInteractPerformed(InputAction.CallbackContext context)
+    {
+        if (controller == null) return;
+        if (GameManager.Instance.deviceIndex > 0 || otherController == null ) return;
+        otherController.Interact(context);
+        Debug.Log("Interact performed");
+    }
+    #endregion alt Interact
+    #region alt Slap
+    public void OnAltSlapPerformed(InputAction.CallbackContext context)
+    {
+        if (controller == null) return;
+        if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
+        otherController.Slap(context);
+        Debug.Log("Slap performed"); Slap = true;
+    }
+    #endregion alt Slap
+    #region alt Movement
+    public void OnAltMovementAction(InputAction.CallbackContext context)
+    {
+        if (controller == null) return;
+        if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
+        otherController.Move(context);
+        Debug.Log("move performed"); MoveDirection = context.ReadValue<Vector2>();
+    }
+    #endregion alt Movement
+    #region alt Pause
+    public void OnAltPausePerformed(InputAction.CallbackContext context)
+    {
+        if (controller == null) return;
+        if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
+        otherController.Pause(context);
+        Debug.Log("Pause performed"); Pause = true;
+    }
+    #endregion alt Pause
+
+
 
 }

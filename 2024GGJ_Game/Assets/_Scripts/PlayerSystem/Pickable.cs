@@ -6,6 +6,7 @@ public class Pickable : MonoBehaviour, IInteractable
 {
     public enum PickableType { Treasure, HeavyTreasure, Plaything }
     public PickableType type;
+    [SerializeField] string PlayfullAnimation;
     [SerializeField] float followSpeed;
     [SerializeField] float upForce = 20;
     bool initialized;
