@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baee9d7e42d964bec966913c329feed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickableObject: {fileID: 11400000, guid: b4f69cca9f5f74ddbb3a6ca56e23e97d, type: 2}
-  followSpeed: 10
-  upForce: 20
+  type: 1
+  followSpeed: 30
+  upForce: 10
   rb: {fileID: 1490755902765612290}
   everythingMask:
     serializedVersion: 2
@@ -119,7 +119,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9063518700431609241}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 3
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -133,7 +133,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0

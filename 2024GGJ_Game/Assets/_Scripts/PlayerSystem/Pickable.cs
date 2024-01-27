@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Pickable : MonoBehaviour, IInteractable
 {
-    [SerializeField] PickableObject pickableObject;
+    public enum PickableType { Treasure, HeavyTreasure, Plaything }
+    public PickableType type;
     [SerializeField] float followSpeed;
     [SerializeField] float upForce = 20;
-     bool initialized;
+    bool initialized;
     public Rigidbody rb;
     bool interacEnabled = true;
     bool picked;
@@ -68,12 +69,12 @@ public class Pickable : MonoBehaviour, IInteractable
         rb.angularVelocity = Vector3.zero;
     }
 
-    public void Drop(Vector3 force)
+    public void Drop(Vector3 force, bool applyUpForce = true)
     {
         rb.velocity /= 2;
         Vector3 throwForce = force;
         rb.AddForce(throwForce, ForceMode.Impulse);
-        rb.AddForce(Vector3.up * upForce, ForceMode.Impulse);
+        if (applyUpForce) rb.AddForce(Vector3.up * upForce, ForceMode.Impulse);
         interacEnabled = true;
         picked = false;
         targetTransform = null;

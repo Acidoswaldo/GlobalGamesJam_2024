@@ -40,6 +40,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform pickableTransform;
     [SerializeField] float throwForce;
 
+    [Header("Entretaining Variables")]
+    public bool entretaining;
+
 
     private void Awake()
     {
@@ -64,6 +67,35 @@ public class PlayerController : MonoBehaviour
     {
         if (!initialized) Initialize();
         CheckClosestInteractableTimer();
+        UpdateAnimator();
+        UpdateEntretaining();
+    }
+
+    void UpdateAnimator()
+    {
+        float target = 0;
+        if (currentPickable != null) { target = 1; }
+
+        Debug.Log("layer" + animator.GetLayerName(1));
+        float layerWeight = animator.GetLayerWeight(1);
+        layerWeight = Mathf.MoveTowards(layerWeight, target, 2 * Time.deltaTime);
+        animator.SetLayerWeight(1, layerWeight);
+    }
+
+    void UpdateEntretaining()
+    {
+        if (entretaining)
+        {
+            canMove = false;
+            Debug.Log("Entretaining");
+
+        }
+        else
+        {
+            canMove = true;
+            Debug.Log("not Entretaining");
+
+        }
     }
 
     private void FixedUpdate()
@@ -75,7 +107,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!initialized) Initialize();
         moveDirection = MoveDirection.ReadValue<Vector2>();
-        if (Vector2.Distance(moveDirection, Vector2.zero) > 0.01f)
+        if (Vector2.Distance(moveDirection, Vector2.zero) > 0.01f && canMove)
         {
             animator.SetBool("isWalking", true);
         }
@@ -83,18 +115,29 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("isWalking", false);
         }
-       
+
     }
 
     private void SetRigidbodyVelocity()
     {
-        if (!canMove) return;
-        Vector3 MoveDirection_3D = new Vector3(moveDirection.x, 0, moveDirection.y);
+        if (!canMove)
+        {
+            rb.velocity = Vector3.MoveTowards(rb.velocity, Vector3.zero, acceleration * 2 * Time.deltaTime);
+            return;
+        }
+        float moveSpeed = speed;
+        if (currentPickable != null)
+        {
+            if (currentPickable.type == Pickable.PickableType.HeavyTreasure) moveSpeed /= 4;
+            else if(currentPickable.type == Pickable.PickableType.Treasure) moveSpeed /= 2;
+        }
+        Vector3 MoveDirection_3D = new Vector3(moveDirection.x * moveSpeed, 0, moveDirection.y * moveSpeed);
         if (moveDirection != Vector2.zero) lookDirection = moveDirection;
-        rb.velocity = Vector3.MoveTowards(rb.velocity, MoveDirection_3D * speed, acceleration * Time.deltaTime);
+
+        rb.velocity = Vector3.MoveTowards(rb.velocity, MoveDirection_3D, acceleration * Time.deltaTime);
 
         var targetAngle = Mathf.Atan2(lookDirection.x, lookDirection.y) * Mathf.Rad2Deg;
-        var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle,ref _currentRotateVelocity, rotateSpeed);
+        var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _currentRotateVelocity, rotateSpeed);
         transform.rotation = Quaternion.Euler(0, angle, 0);
 
     }
@@ -164,9 +207,36 @@ public class PlayerController : MonoBehaviour
         if (!initialized) Initialize();
         if (ctx.performed)
         {
-            if (closestInteractable == null) return;
+            if(currentPickable != null)
+            {
+                if (currentPickable.type == Pickable.PickableType.Plaything)
+                {
+                    Entretain();
+                }
+                else
+                {
+                    DropObject();
+                }
+                return;
+            }
+            if (closestInteractable == null)
+            {
+                return;
+            }
             closestInteractable.Interact(this);
+        }else if (ctx.canceled)
+        {
+            StopEntrtain();
         }
+    }
+
+    void Entretain()
+    {
+        entretaining = true;
+    }
+    void StopEntrtain()
+    {
+        entretaining = false;
     }
 
     public void PickObject(Pickable objectToPick)
