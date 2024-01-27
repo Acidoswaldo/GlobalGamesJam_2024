@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -14,34 +15,27 @@ public class Emperor : MonoBehaviour
     private int rotationDirection = 1; 
     private bool isWaiting = false;
 
-    [Header("Treasure Setting")]
-    [SerializeField] private float visionRange = 10.0f;
-    [SerializeField] private LayerMask treasureLayer;
-    private List<Transform> treasures = new List<Transform>();
-
+    [SerializeField] private LayerMask treasureLayer; // Layer for treasures
+    [SerializeField] private float rayLength = 10f; // Length of the detection ray
+    private bool isDetectingTreasure = true;
+    [SerializeField] private List<GameObject> treasures;
+    [SerializeField] private Material missingMaterial;
 
     private void Start()
     {
-        // Initialize the list of treasures
-        GameObject[] treasureObjects = GameObject.FindGameObjectsWithTag("Treasure");
-        foreach (var treasure in treasureObjects)
-        {
-            treasures.Add(treasure.transform);
-        }
     }
 
     void Update()
     {
-        if (!playerDetected && !isWaiting)
+        if (!playerDetected && !isWaiting && isDetectingTreasure)
         {
             RotateBackAndForth();
+            DetectTreasure();
         }
         else if (playerDetected)
         {
             RotateTowardsPlayer();
         }
-
-        CheckTreasures();
     }
 
     void RotateBackAndForth()
@@ -61,7 +55,7 @@ public class Emperor : MonoBehaviour
             StartCoroutine(WaitRandomTime());
         }
 
-        transform.rotation = Quaternion.Euler(0, currentRotationAngle, 0);
+        transform.rotation = Quaternion.Euler(transform.rotation.x, currentRotationAngle, transform.rotation.z);
     }
 
     private IEnumerator WaitRandomTime()
@@ -76,30 +70,9 @@ public class Emperor : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        Vector3 directionToPlayer = playerTransform.position - transform.position;
-        float angleToPlayer = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, angleToPlayer), rotationSpeed * Time.deltaTime);
-    }
-
-    void CheckTreasures()
-    {
-        foreach (Transform treasure in treasures)
-        {
-            Vector3 directionToTreasure = treasure.position - transform.position;
-            if (Vector3.Angle(transform.forward, directionToTreasure) < maxRotationAngle / 2) // Check if within field of view
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, directionToTreasure, out hit, visionRange, treasureLayer))
-                {
-                    if (hit.transform != treasure) // If the ray did not hit the expected treasure
-                    {
-                        Debug.Log("Danger");
-                        // You can break out of the loop if you only want to log once per frame
-                        break;
-                    }
-                }
-            }
-        }
+        Vector3 directionToPlayer = -(playerTransform.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -108,6 +81,7 @@ public class Emperor : MonoBehaviour
         {
             playerDetected = true;
             playerTransform = other.transform;
+            isDetectingTreasure = false; // Í£Ö¹ÉäÏß¼ì²â
         }
     }
 
@@ -117,6 +91,29 @@ public class Emperor : MonoBehaviour
         {
             playerDetected = false;
             playerTransform = null;
+            isDetectingTreasure = true; // »Ö¸´ÉäÏß¼ì²â
         }
+    }
+
+    void DetectTreasure()
+    {
+        Vector3 direction = -transform.forward;
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, direction, out hit, rayLength, treasureLayer))
+        {
+            Debug.Log("Get Treasure");
+            GameObject hitObject = hit.collider.gameObject;
+            if (treasures.Contains(hitObject)) 
+            {
+                Renderer renderer = hitObject.GetComponent<Renderer>();
+                if (renderer != null && renderer.sharedMaterial == missingMaterial)
+                {
+                    Debug.Log("Danger");
+                }
+            }
+        }
+
+        Debug.DrawRay(transform.position, direction * rayLength, Color.red);
     }
 }
