@@ -3,19 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Treasure
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Outlined Objects
   - Water
   - UI
   - Interactables/Slapables
   - Interactables/Pickables
   - OtherSide
   - Wall
-  - 
+  - Treasure
   - 
   - 
   - 
