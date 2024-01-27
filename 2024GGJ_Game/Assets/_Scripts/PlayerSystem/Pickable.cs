@@ -64,20 +64,20 @@ public class Pickable : MonoBehaviour, IInteractable
         picked = true;
         targetTransform = playerTarget;
         rb.excludeLayers = everythingMask;
+        transform.rotation = playerTarget.rotation;
+        rb.angularVelocity = Vector3.zero;
     }
 
-    public void Drop(Vector2 force)
+    public void Drop(Vector3 force)
     {
+        rb.velocity /= 2;
         Vector3 throwForce = force;
-        throwForce.z = -upForce;
-        rb.AddForce(throwForce);
-
+        rb.AddForce(throwForce, ForceMode.Impulse);
+        rb.AddForce(Vector3.up * upForce, ForceMode.Impulse);
         interacEnabled = true;
         picked = false;
         targetTransform = null;
         rb.excludeLayers = nothingMask;
-
-
     }
 
     bool IInteractable.CanBeInteracted()
