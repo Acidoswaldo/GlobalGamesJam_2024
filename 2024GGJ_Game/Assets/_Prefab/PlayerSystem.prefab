@@ -145,7 +145,7 @@ MonoBehaviour:
   minClamp: 15
   maxClamp: 30
   offset: 7.16
-  playerInfluence: 0
+  playerInfluence: 3.05
 --- !u!1 &2658338574136692455
 GameObject:
   m_ObjectHideFlags: 0

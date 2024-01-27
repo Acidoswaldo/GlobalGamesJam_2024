@@ -62,6 +62,33 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltMovement"",
+                    ""type"": ""Value"",
+                    ""id"": ""7d08a21a-5df1-41b8-a663-e5bb83afb17f"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""AltInteract"",
+                    ""type"": ""Button"",
+                    ""id"": ""01587b42-0f93-4175-9cbc-d6aa4157e364"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltSlap"",
+                    ""type"": ""Button"",
+                    ""id"": ""38eaef2a-0aa3-4868-a324-ba475c9479c7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -196,6 +223,83 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Arrows"",
+                    ""id"": ""81ac2d08-e992-4da6-a675-09854e061fc1"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""8e492445-007e-4cc3-a6ba-4f675fe5249a"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""f19996f9-1abe-4e5e-b7ce-78c7f1a12a3a"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""54a8ea59-aa23-44a7-8ed3-5b34a5377499"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""d9f0a428-a3c1-456d-8498-0f756a887025"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01e1549b-1483-4f4a-8b04-2ddf1c44c9a7"",
+                    ""path"": ""<Keyboard>/rightShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltInteract"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b6545698-a1bc-4db2-84d3-ffaf913fe3bf"",
+                    ""path"": ""<Keyboard>/period"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltSlap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +312,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_Slap = m_Player.FindAction("Slap", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_AltMovement = m_Player.FindAction("AltMovement", throwIfNotFound: true);
+        m_Player_AltInteract = m_Player.FindAction("AltInteract", throwIfNotFound: true);
+        m_Player_AltSlap = m_Player.FindAction("AltSlap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -273,6 +380,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Slap;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_AltMovement;
+    private readonly InputAction m_Player_AltInteract;
+    private readonly InputAction m_Player_AltSlap;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -281,6 +391,9 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Slap => m_Wrapper.m_Player_Slap;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @AltMovement => m_Wrapper.m_Player_AltMovement;
+        public InputAction @AltInteract => m_Wrapper.m_Player_AltInteract;
+        public InputAction @AltSlap => m_Wrapper.m_Player_AltSlap;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -302,6 +415,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @AltMovement.started += instance.OnAltMovement;
+            @AltMovement.performed += instance.OnAltMovement;
+            @AltMovement.canceled += instance.OnAltMovement;
+            @AltInteract.started += instance.OnAltInteract;
+            @AltInteract.performed += instance.OnAltInteract;
+            @AltInteract.canceled += instance.OnAltInteract;
+            @AltSlap.started += instance.OnAltSlap;
+            @AltSlap.performed += instance.OnAltSlap;
+            @AltSlap.canceled += instance.OnAltSlap;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -318,6 +440,15 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @AltMovement.started -= instance.OnAltMovement;
+            @AltMovement.performed -= instance.OnAltMovement;
+            @AltMovement.canceled -= instance.OnAltMovement;
+            @AltInteract.started -= instance.OnAltInteract;
+            @AltInteract.performed -= instance.OnAltInteract;
+            @AltInteract.canceled -= instance.OnAltInteract;
+            @AltSlap.started -= instance.OnAltSlap;
+            @AltSlap.performed -= instance.OnAltSlap;
+            @AltSlap.canceled -= instance.OnAltSlap;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -341,5 +472,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnSlap(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnAltMovement(InputAction.CallbackContext context);
+        void OnAltInteract(InputAction.CallbackContext context);
+        void OnAltSlap(InputAction.CallbackContext context);
     }
 }
