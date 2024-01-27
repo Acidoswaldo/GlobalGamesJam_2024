@@ -7,7 +7,7 @@ using UnityEngine;
 public class Emperor : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 1.0f;
-    [SerializeField] private float maxRotationAngle = 0f; // 180 degrees
+    [SerializeField] private float maxRotationAngle = 0f;
     [SerializeField] private float minRotationAngle = -180.0f;
     private Transform playerTransform;
     private bool playerDetected = false;
@@ -15,14 +15,21 @@ public class Emperor : MonoBehaviour
     private int rotationDirection = 1; 
     private bool isWaiting = false;
 
-    [SerializeField] private LayerMask treasureLayer; // Layer for treasures
-    [SerializeField] private float rayLength = 10f; // Length of the detection ray
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private LayerMask treasureLayer; 
+    [SerializeField] private float rayLength = 10f; 
     private bool isDetectingTreasure = true;
     [SerializeField] private List<GameObject> treasures;
     [SerializeField] private Material missingMaterial;
 
     private void Start()
     {
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 2;
+            lineRenderer.startWidth = 0.05f;
+            lineRenderer.endWidth = 0.05f;
+        }
     }
 
     void Update()
@@ -81,7 +88,7 @@ public class Emperor : MonoBehaviour
         {
             playerDetected = true;
             playerTransform = other.transform;
-            isDetectingTreasure = false; // Õ£÷π…‰œﬂºÏ≤‚
+            isDetectingTreasure = false;
         }
     }
 
@@ -91,7 +98,7 @@ public class Emperor : MonoBehaviour
         {
             playerDetected = false;
             playerTransform = null;
-            isDetectingTreasure = true; // ª÷∏¥…‰œﬂºÏ≤‚
+            isDetectingTreasure = true; 
         }
     }
 
@@ -104,7 +111,7 @@ public class Emperor : MonoBehaviour
         {
             Debug.Log("Get Treasure");
             GameObject hitObject = hit.collider.gameObject;
-            if (treasures.Contains(hitObject)) 
+            if (treasures.Contains(hitObject))
             {
                 Renderer renderer = hitObject.GetComponent<Renderer>();
                 if (renderer != null && renderer.sharedMaterial == missingMaterial)
@@ -114,6 +121,10 @@ public class Emperor : MonoBehaviour
             }
         }
 
-        Debug.DrawRay(transform.position, direction * rayLength, Color.red);
+        if (lineRenderer != null)
+        {
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, transform.position + direction * rayLength);
+        }
     }
 }
