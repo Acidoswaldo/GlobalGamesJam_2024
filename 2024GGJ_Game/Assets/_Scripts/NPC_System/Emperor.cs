@@ -19,10 +19,6 @@ public class Emperor : MonoBehaviour
     [SerializeField] private LayerMask treasureLayer;
     private List<Transform> treasures = new List<Transform>();
 
-    [Header("Fan Shaped Area for Sight")]
-    [SerializeField] private int numberOfRays = 10; 
-    [SerializeField] private LayerMask obstacleLayer;
-
 
     private void Start()
     {
