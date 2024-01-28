@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Emperor Variables")]
     [SerializeField] private Emperor emperor;
+    public Text conversationText;
 
 
     private void Awake()
@@ -92,7 +94,7 @@ public class PlayerController : MonoBehaviour
         if (entertaining && currentPickable != null)
         {
             canMove = false;
-            Debug.Log("Entertaining");
+            UpdateConversationText("interesting!");
             entretainParticles.Play();
             emperor.Entretain(currentPickable);
         }
@@ -206,7 +208,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Target = " + target.name);
             if (target.TryGetComponent(out IInteractable interactable))
             {
-                if (interactable.CanBeInteracted()) activeInteractables.Add(interactable);
+                if (interactable.CanBeInteracted())
+                {
+                    activeInteractables.Add(interactable);
+                };
+                
             }
         }
         closestInteractable = null;
@@ -232,6 +238,7 @@ public class PlayerController : MonoBehaviour
                 if (currentPickable.type == Pickable.PickableType.Plaything)
                 {
                     Entertain();
+                    UpdateConversationText("interesting!");
                 }
                 else
                 {
@@ -283,5 +290,15 @@ public class PlayerController : MonoBehaviour
 
     public int PlayerIndex() { return playerIndex; }
 
+    public void UpdateConversationText(string newText)
+    {
+        CancelInvoke("ClearText");
+        conversationText.text = newText;
+        Invoke("ClearText", 3f);
+    }
 
+    void ClearText()
+    {
+        conversationText.text = "";
+    }
 }

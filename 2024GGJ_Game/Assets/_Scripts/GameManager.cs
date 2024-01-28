@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public Text conversationText;
     public int MaxTreasures; public int currentTreasures;
     public bool GameStarted;
+    private bool showedText;
 
 
     [SerializeField] PlayerController[] playerControllers;
@@ -37,10 +39,12 @@ public class GameManager : MonoBehaviour
         {
             Player2Ready = true;
         }
-        if(Player1Ready && Player2Ready)
+        if(Player1Ready && Player2Ready && showedText == false)
         {
             GameStarted = true;
-            GameEventSystem.Instance.StartGame();
+            GameEventSystem.Instance.StartGame(); 
+            UpdateConversationText("Game Start!!");
+            showedText = true;
         }
     }
 
@@ -73,6 +77,18 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
-        Debug.Log("Won Game");
+        UpdateConversationText("Congraduations! You win!!");
+    }
+
+    public void UpdateConversationText(string newText)
+    {
+        CancelInvoke("ClearText");
+        conversationText.text = newText;
+        Invoke("ClearText", 3f);
+    }
+
+    void ClearText()
+    {
+        conversationText.text = "";
     }
 }

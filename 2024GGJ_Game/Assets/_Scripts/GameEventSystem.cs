@@ -1,10 +1,12 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameEventSystem : MonoBehaviour
 {
     public static GameEventSystem Instance;
+    public Text conversationText;
     [SerializeField] private TextMeshProUGUI gameStartText;
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private TextMeshProUGUI gameOverText;
@@ -83,6 +85,18 @@ public class GameEventSystem : MonoBehaviour
     public void ReduceTime(float amount)
     {
         gameTime = Mathf.Max(0, gameTime - amount);
+        UpdateConversationText("Emperor Find the Treasures! Hurry Up!");
+    }
 
+    public void UpdateConversationText(string newText)
+    {
+        CancelInvoke("ClearText");
+        conversationText.text = newText;
+        Invoke("ClearText", 3f);
+    }
+
+    void ClearText()
+    {
+        conversationText.text = "";
     }
 }
