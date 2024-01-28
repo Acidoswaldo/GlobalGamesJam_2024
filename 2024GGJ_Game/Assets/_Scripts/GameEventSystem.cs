@@ -8,12 +8,12 @@ public class GameEventSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private TextMeshProUGUI gameOverText;
 
-    private float gameTime = 10.0f; 
+    private float gameTime = 180.0f; 
     private bool gameStarted = false;
 
     void Start()
     {
-        gameStartText.gameObject.SetActive(true);
+       // gameStartText.gameObject.SetActive(true);
         gameOverText.gameObject.SetActive(false);
         countdownText.gameObject.SetActive(false);
         gameStartText.text = "Press Enter to start game";
@@ -21,7 +21,8 @@ public class GameEventSystem : MonoBehaviour
 
     void Update()
     {
-        if (!gameStarted && Input.GetKeyDown(KeyCode.Return))
+        // Test
+        if (!gameStarted)
         {
             StartGame();
         }
@@ -30,6 +31,16 @@ public class GameEventSystem : MonoBehaviour
         {
             UpdateCountdown();
         }
+
+        /*if (!gameStarted && Input.GetKeyDown(KeyCode.Return))
+        {
+            StartGame();
+        }
+
+        if (gameStarted)
+        {
+            UpdateCountdown();
+        }     */
     }
 
     void StartGame()
@@ -68,5 +79,11 @@ public class GameEventSystem : MonoBehaviour
         int minutes = (int)(timeInSeconds / 60);
         int seconds = (int)(timeInSeconds % 60);
         return minutes.ToString("00") + ":" + seconds.ToString("00");
+    }
+
+    public void ReduceTime(float amount)
+    {
+        gameTime = Mathf.Max(0, gameTime - amount);
+
     }
 }

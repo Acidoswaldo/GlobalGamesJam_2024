@@ -111,6 +111,8 @@ MonoBehaviour:
     m_Bits: 0
   pickedScale: {x: 0.5, y: 0.5, z: 0.5}
   scaleSpeed: 5
+  missingPrefab: {fileID: 8206373307811595630, guid: 22b37cd9640fc6544aafef83f2321635,
+    type: 3}
 --- !u!54 &1490755902765612290
 Rigidbody:
   m_ObjectHideFlags: 0
