@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;//Emma_Add the UI Scene
 public class UI_MainScene_Start_To : MonoBehaviour
 {
     [SerializeField] Animator animator;
+    public GameObject tutorialMenu;
+    public GameObject producerMenu;
+    public GameObject iconShowLater;
+    public GameObject iconShowEarly;
 
     public float fadeInDuration = 5.0f;
     private CanvasGroup canvasGroup;
@@ -17,6 +21,8 @@ public class UI_MainScene_Start_To : MonoBehaviour
     private void Start()
     {
         StartCoroutine(PlayButtonAnimationsSequentially());
+        tutorialMenu.SetActive(false);
+        producerMenu.SetActive(false); 
     }
 
     private void Awake()
@@ -77,11 +83,13 @@ public class UI_MainScene_Start_To : MonoBehaviour
             }
         }
 
+        iconShowLater.SetActive(true);
         // Wait for 1 second
         yield return new WaitForSeconds(1);
-
+        iconShowLater.SetActive(false);
+        iconShowEarly.SetActive(false);
         // Load the scene
-        SceneManager.LoadSceneAsync("UI_LevelSelect");
+        SceneManager.LoadSceneAsync("Level1");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -92,4 +100,16 @@ public class UI_MainScene_Start_To : MonoBehaviour
             go.SetActive(true);
         }
     }
+
+    public void ShowTutorial() { 
+              tutorialMenu.SetActive(true);
+    }
+
+    public void HideTutorial() {  tutorialMenu.SetActive(false); }
+
+    public void ShowProducer() { 
+        producerMenu.SetActive(true);
+    }
+
+    public void HideProducer() { producerMenu.SetActive(false); }
 }
