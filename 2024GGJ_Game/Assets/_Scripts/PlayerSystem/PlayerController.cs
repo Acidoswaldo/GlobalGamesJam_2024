@@ -40,8 +40,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform pickableTransform;
     [SerializeField] float throwForce;
 
-    [Header("Entretaining Variables")]
-    public bool entretaining;
+    [Header("Entertaining Variables")]
+    public bool entertaining;
 
     [Header("Emperor Variables")]
     [SerializeField] private Emperor emperor;
@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
         if (!initialized) Initialize();
         CheckClosestInteractableTimer();
         UpdateAnimator();
-        UpdateEntretaining();
+        UpdateEntertaining();
     }
 
     void UpdateAnimator()
@@ -85,9 +85,9 @@ public class PlayerController : MonoBehaviour
         animator.SetLayerWeight(1, layerWeight);
     }
 
-    void UpdateEntretaining()
+    void UpdateEntertaining()
     {
-        if (entretaining)
+        if (entertaining)
         {
             canMove = false;
             Debug.Log("Entertaining");
@@ -108,8 +108,20 @@ public class PlayerController : MonoBehaviour
     public void Move(InputAction.CallbackContext MoveDirection)
     {
         if (!initialized) Initialize();
-        moveDirection = MoveDirection.ReadValue<Vector2>();
-        if (Vector2.Distance(moveDirection, Vector2.zero) > 0.01f && canMove)
+
+        // Get movement direction relative to main camera transform
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 right = Camera.main.transform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        moveDirection = forward * MoveDirection.ReadValue<Vector2>().y + right * MoveDirection.ReadValue<Vector2>().x;
+
+        if (MoveDirection.ReadValue<Vector2>() != Vector2.zero && canMove)
         {
             animator.SetBool("isWalking", true);
         }
@@ -133,7 +145,7 @@ public class PlayerController : MonoBehaviour
             if (currentPickable.type == Pickable.PickableType.HeavyTreasure) moveSpeed /= 4;
             else if(currentPickable.type == Pickable.PickableType.Treasure) moveSpeed /= 2;
         }
-        Vector3 MoveDirection_3D = new Vector3(moveDirection.x * moveSpeed, 0, moveDirection.y * moveSpeed);
+        Vector3 MoveDirection_3D = moveDirection * moveSpeed;
         if (moveDirection != Vector2.zero) lookDirection = moveDirection;
 
         rb.velocity = Vector3.MoveTowards(rb.velocity, MoveDirection_3D, acceleration * Time.deltaTime);
@@ -213,7 +225,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (currentPickable.type == Pickable.PickableType.Plaything)
                 {
-                    Entretain();
+                    Entertain();
                 }
                 else
                 {
@@ -228,17 +240,17 @@ public class PlayerController : MonoBehaviour
             closestInteractable.Interact(this);
         }else if (ctx.canceled)
         {
-            StopEntrtain();
+            StopEntertain();
         }
     }
 
-    void Entretain()
+    void Entertain()
     {
-        entretaining = true;
+        entertaining = true;
     }
-    void StopEntrtain()
+    void StopEntertain()
     {
-        entretaining = false;
+        entertaining = false;
     }
 
     public void PickObject(Pickable objectToPick)
