@@ -5,8 +5,47 @@ using UnityEngine.SceneManagement;//Emma_Add the UI Scene
 
 public class UI_MainScene_Start_To : MonoBehaviour
 {
-    private List<GameObject> deactivatedUIObjects = new List<GameObject>();
     [SerializeField] Animator animator;
+
+    public float fadeInDuration = 5.0f;
+    private CanvasGroup canvasGroup;
+    private List<GameObject> deactivatedUIObjects = new List<GameObject>();
+
+    public Animator[] buttonAnimators; 
+    public float delayBetweenButtons = 0.5f;
+
+    private void Start()
+    {
+        StartCoroutine(PlayButtonAnimationsSequentially());
+    }
+
+    private void Awake()
+    {
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+
+        canvasGroup.alpha = 0;
+    }
+
+    private void Update()
+    {
+        if (canvasGroup.alpha < 1)
+        {
+            canvasGroup.alpha += Time.deltaTime / fadeInDuration;
+        }
+    }
+
+    IEnumerator PlayButtonAnimationsSequentially()
+    {
+        foreach (Animator animator in buttonAnimators)
+        {
+            animator.SetTrigger("PlayAnimation"); 
+            yield return new WaitForSeconds(delayBetweenButtons);
+        }
+    }
 
     private void OnEnable()
     {
