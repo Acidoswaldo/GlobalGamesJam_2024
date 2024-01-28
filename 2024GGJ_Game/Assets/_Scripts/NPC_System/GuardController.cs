@@ -65,9 +65,11 @@ public class GuardController : MonoBehaviour
 
     void RotateTowardsTarget()
     {
-        Vector3 targetDirection = currentTarget.position - transform.position;
-        float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        // 只考虑 X 和 Z 轴的目标方向
+        Vector3 targetDirection = new Vector3(currentTarget.position.x - transform.position.x, 0, currentTarget.position.z - transform.position.z);
+
+        // 旋转只发生在 Y 轴
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 }
