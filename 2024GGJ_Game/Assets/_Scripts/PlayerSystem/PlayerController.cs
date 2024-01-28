@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float acceleration;
     [SerializeField] float rotateSpeed;
     [SerializeField] bool in3D;
-    Vector2 moveDirection;
+    Vector3 moveDirection;
     Vector3 lookDirection;
     bool canMove = true;
     float _currentRotateVelocity;
@@ -146,11 +146,11 @@ public class PlayerController : MonoBehaviour
             else if(currentPickable.type == Pickable.PickableType.Treasure) moveSpeed /= 2;
         }
         Vector3 MoveDirection_3D = moveDirection * moveSpeed;
-        if (moveDirection != Vector2.zero) lookDirection = moveDirection;
+        if (moveDirection != Vector3.zero) lookDirection = moveDirection;
 
         rb.velocity = Vector3.MoveTowards(rb.velocity, MoveDirection_3D, acceleration * Time.deltaTime);
 
-        var targetAngle = Mathf.Atan2(lookDirection.x, lookDirection.y) * Mathf.Rad2Deg;
+        var targetAngle = Mathf.Atan2(lookDirection.x, lookDirection.z) * Mathf.Rad2Deg;
         var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _currentRotateVelocity, rotateSpeed);
         transform.rotation = Quaternion.Euler(0, angle, 0);
 
