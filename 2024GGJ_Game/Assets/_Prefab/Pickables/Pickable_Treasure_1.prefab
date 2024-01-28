@@ -8,20 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1490755902765612290, guid: 2bc6cbe3f46414056b0d2239599878e2,
-        type: 3}
-      propertyPath: m_Mass
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1490755902765612290, guid: 2bc6cbe3f46414056b0d2239599878e2,
-        type: 3}
-      propertyPath: m_UseGravity
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1548231545812162012, guid: 2bc6cbe3f46414056b0d2239599878e2,
         type: 3}
-      propertyPath: type
-      value: 0
+      propertyPath: ID
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2900528252213277514, guid: 2bc6cbe3f46414056b0d2239599878e2,
         type: 3}
@@ -76,15 +66,9 @@ PrefabInstance:
     - target: {fileID: 9063518700431609241, guid: 2bc6cbe3f46414056b0d2239599878e2,
         type: 3}
       propertyPath: m_Name
-      value: Pickable_Treasure_Variant
+      value: Pickable_Treasure_1
       objectReference: {fileID: 0}
-    - target: {fileID: 9063518700431609241, guid: 2bc6cbe3f46414056b0d2239599878e2,
-        type: 3}
-      propertyPath: m_TagString
-      value: Treasure
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7672359647137645330, guid: 2bc6cbe3f46414056b0d2239599878e2, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
