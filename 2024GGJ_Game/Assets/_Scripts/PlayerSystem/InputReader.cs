@@ -9,6 +9,7 @@ public class InputReader : MonoBehaviour
     bool Interact;
     bool Slap;
     bool Pause;
+    int PlayerID;
     Vector2 MoveDirection;
     [SerializeField] PlayerController controller;
     [SerializeField] PlayerController otherController;
@@ -18,6 +19,7 @@ public class InputReader : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         var players = GameManager.Instance.GetPlayers();
         var index = playerInput.playerIndex;
+        PlayerID = index;
         if(index == 0) { GameManager.Instance.SetDeviceIndex(index); otherController = players[index + 1]; }
         controller = players[index];
     }
@@ -25,6 +27,8 @@ public class InputReader : MonoBehaviour
     public void OnInteractPerformed(InputAction.CallbackContext context)
     {
         if (controller == null) return;
+        GameManager.Instance.SetPlayerReady(PlayerID == 0);
+        if (!GameEventSystem.gameStarted) return;
         controller.Interact(context);
         Debug.Log("Interact performed");
     }
@@ -33,6 +37,7 @@ public class InputReader : MonoBehaviour
     public void OnSlapPerformed(InputAction.CallbackContext context)
     {
         if (controller == null) return;
+        if (!GameEventSystem.gameStarted) return;
         controller.Slap(context);
         Debug.Log("Slap performed"); Slap = true;
     }
@@ -41,6 +46,7 @@ public class InputReader : MonoBehaviour
     public void OnMovementAction(InputAction.CallbackContext context)
     {
         if (controller == null) return;
+        if (!GameEventSystem.gameStarted) return;
         controller.Move(context);
         Debug.Log("move performed"); MoveDirection = context.ReadValue<Vector2>();
     }
@@ -49,6 +55,7 @@ public class InputReader : MonoBehaviour
     public void OnPausePerformed(InputAction.CallbackContext context)
     {
         if (controller == null) return;
+        if (!GameEventSystem.gameStarted) return;
         controller.Pause(context);
         Debug.Log("Pause performed"); Pause = true;
     }
@@ -60,6 +67,9 @@ public class InputReader : MonoBehaviour
     {
         if (controller == null) return;
         if (GameManager.Instance.deviceIndex > 0 || otherController == null ) return;
+
+        GameManager.Instance.SetPlayerReady(false);
+        if (!GameEventSystem.gameStarted) return;
         otherController.Interact(context);
         Debug.Log("Interact performed");
     }
@@ -69,6 +79,7 @@ public class InputReader : MonoBehaviour
     {
         if (controller == null) return;
         if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
+        if (!GameEventSystem.gameStarted) return;
         otherController.Slap(context);
         Debug.Log("Slap performed"); Slap = true;
     }
@@ -78,6 +89,7 @@ public class InputReader : MonoBehaviour
     {
         if (controller == null) return;
         if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
+        if (!GameEventSystem.gameStarted) return;
         otherController.Move(context);
         Debug.Log("move performed"); MoveDirection = context.ReadValue<Vector2>();
     }
@@ -87,6 +99,7 @@ public class InputReader : MonoBehaviour
     {
         if (controller == null) return;
         if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
+        if (!GameEventSystem.gameStarted) return;
         otherController.Pause(context);
         Debug.Log("Pause performed"); Pause = true;
     }
