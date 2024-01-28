@@ -2,6 +2,10 @@ Shader "Custom/Mat15_Shader"
 {
     Properties
     {
+        //Add Normal
+        _NormalMap ("Normal Map", 2D) = "bump" {}
+        _NormalStrength ("Normal Strength", Range(0,1)) = 0.5
+
         [HDR]_Color("Albedo", Color) = (1,1,1,1)
         _MainTex ("Texture", 2D) = "white" {}
         _ScanColor ("Scan Color", Color) = (1,1,0,1)
@@ -38,6 +42,9 @@ Shader "Custom/Mat15_Shader"
     float _ScanLineBlur;
     float _ScanLineTransparency;
     float _EnableScan;
+    //Add Normal
+    sampler2D _NormalMap;
+    float _NormalStrength;
    
     struct appdata
     {
