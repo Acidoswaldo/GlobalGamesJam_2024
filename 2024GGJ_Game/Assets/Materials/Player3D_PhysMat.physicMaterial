@@ -8,7 +8,7 @@ PhysicMaterial:
   m_PrefabAsset: {fileID: 0}
   m_Name: Player3D_PhysMat
   dynamicFriction: 7.29
-  staticFriction: 0.6
+  staticFriction: 0
   bounciness: 0
   frictionCombine: 0
   bounceCombine: 0
