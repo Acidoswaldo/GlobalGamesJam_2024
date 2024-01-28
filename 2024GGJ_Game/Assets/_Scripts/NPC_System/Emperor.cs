@@ -19,14 +19,22 @@ public class Emperor : MonoBehaviour
     [SerializeField] private LayerMask treasureLayer;
     [SerializeField] private float rayLength = 10f;
     private bool isDetectingTreasure = true;
-    private float lastReduceTime = 0.0f; 
+    private float lastReduceTime = 0.0f;
     [SerializeField] private float reduceCooldown = 5.0f;
     [SerializeField] private Material missingMaterial;
 
     [Header("Entertainment Variables")]
     [SerializeField] private Slider entertainmentSlider;
-    [SerializeField] private float entertainmentDuration = 10.0f;
-    private float currentEntertainmentTime;
+    [SerializeField] List<EntretainmentObject> entretainingObjects = new List<EntretainmentObject>();
+    Pickable entretainingPickable;
+    public class EntretainmentObject
+    {
+        public int id;
+        public float entertainmentDuration;
+        public float currentEntertainmentTime;
+    }
+
+    bool newEntretainingStarted;
 
     [Header("Implement")]
     [SerializeField] private GameEventSystem gameEventSystem;
@@ -53,15 +61,24 @@ public class Emperor : MonoBehaviour
             RotateTowardsPlayer();
         }
 
-        if (playerDetected && entertainmentSlider != null)
+        if (playerDetected && entertainmentSlider != null && entretainingPickable != null)
         {
-            if (currentEntertainmentTime > 0)
+            bool EntretainingObjectFoundAndNot0 = false;
+            for (int i = 0; i < entretainingObjects.Count; i++)
             {
-                currentEntertainmentTime -= Time.deltaTime;
-                entertainmentSlider.value = currentEntertainmentTime / entertainmentDuration;
-                Debug.Log($"currentEntertainmentTime: {currentEntertainmentTime}, Slider Value: {entertainmentSlider.value}");
+                if (entretainingPickable.ID == entretainingObjects[i].id)
+                {
+                    if (entretainingObjects[i].entertainmentDuration > 0)
+                    {
+                        EntretainingObjectFoundAndNot0 = true;
+                        entretainingObjects[i].currentEntertainmentTime -= Time.deltaTime;
+                        entertainmentSlider.value = entretainingObjects[i].currentEntertainmentTime / entretainingObjects[i].entertainmentDuration;
+                        Debug.Log($"currentEntertainmentTime: {entretainingObjects[i].currentEntertainmentTime}, Slider Value: {entertainmentSlider.value}");
+                    }
+                }
             }
-            else
+
+            if (!EntretainingObjectFoundAndNot0)
             {
                 RotateBackAndForth();
             }
@@ -150,7 +167,7 @@ public class Emperor : MonoBehaviour
                 if (gameEventSystem != null && Time.time - lastReduceTime >= reduceCooldown)
                 {
                     gameEventSystem.ReduceTime(20.0f);
-                    lastReduceTime = Time.time; 
+                    lastReduceTime = Time.time;
                 }
             }
         }
@@ -159,7 +176,8 @@ public class Emperor : MonoBehaviour
 
 
 
-    void DrawLine(Vector3 direction) {
+    void DrawLine(Vector3 direction)
+    {
         if (lineRenderer != null)
         {
             lineRenderer.SetPosition(0, transform.position);
@@ -167,15 +185,33 @@ public class Emperor : MonoBehaviour
         }
     }
 
-    public void StartEntertainment()
+    public void Entretain(Pickable pickable)
     {
-        currentEntertainmentTime = entertainmentDuration;
+        if (pickable.type != Pickable.PickableType.Plaything) return;
+        bool hasEntretainingObject = false;
+        for (int i = 0; i < entretainingObjects.Count; i++)
+        {
+            if (entretainingObjects[i].id == pickable.ID) hasEntretainingObject = true;
+        }
+        if (!hasEntretainingObject)
+        {
+            var NewEntretianingObject = new EntretainmentObject
+            {
+                id = pickable.ID,
+                entertainmentDuration = pickable.EntretainingDuration,
+                currentEntertainmentTime = pickable.EntretainingDuration
+
+
+            };
+            entretainingObjects.Add(NewEntretianingObject);
+        }
+        entretainingPickable = pickable;
         entertainmentSlider.gameObject.SetActive(true);
-        entertainmentSlider.value = 1.0f;
     }
 
     public void StopEntertainment()
     {
+        entretainingPickable = null;
         entertainmentSlider.gameObject.SetActive(false);
     }
 }

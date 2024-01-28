@@ -88,11 +88,11 @@ public class PlayerController : MonoBehaviour
 
     void UpdateEntertaining()
     {
-        if (entertaining)
+        if (entertaining && currentPickable != null)
         {
             canMove = false;
             Debug.Log("Entertaining");
-            emperor.StartEntertainment();
+            emperor.Entretain(currentPickable);
         }
         else
         {

@@ -11,15 +11,15 @@ public class PickableStand : MonoBehaviour, IInteractable
     float checkTimer;
     bool showMissable;
     bool ObjectInStand;
-    BoxCollider boxCollider;
+    [SerializeField] BoxCollider boxCollider;
     private void Start()
     {
-        boxCollider = GetComponent<BoxCollider>();
+        if (boxCollider == null) boxCollider = GetComponent<BoxCollider>();
     }
     private void Update()
     {
         Missing.SetActive(showMissable);
-        if(checkTimer <= 0)
+        if (checkTimer <= 0)
         {
             checkTimer = timeBetweenChecks;
             Check();
