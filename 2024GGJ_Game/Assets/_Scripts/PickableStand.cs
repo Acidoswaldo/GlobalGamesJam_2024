@@ -8,6 +8,7 @@ public class PickableStand : MonoBehaviour, IInteractable
     [SerializeField] GameObject Missing;
     [SerializeField] float UpOffset;
     [SerializeField, Range(0, 0.5f)] float timeBetweenChecks = 0.1f;
+    [SerializeField, Range(0, 5f)] float checkScaleMultiplier = 1f;
     float checkTimer;
     bool showMissable;
     bool ObjectInStand;
@@ -32,7 +33,7 @@ public class PickableStand : MonoBehaviour, IInteractable
     }
     void Check()
     {
-        var hits = Physics.BoxCastAll(transform.position + (Vector3.up * UpOffset), (boxCollider.size / 2) * 1.5f, Vector3.up); ;
+        var hits = Physics.BoxCastAll(transform.position + (Vector3.up * UpOffset), (boxCollider.size / 2) * checkScaleMultiplier, Vector3.up); ;
         showMissable = true;
         for (int i = 0; i < hits.Length; i++)
         {
@@ -57,6 +58,6 @@ public class PickableStand : MonoBehaviour, IInteractable
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + (Vector3.up * UpOffset), boxCollider.size * 1.5f);
+        Gizmos.DrawWireCube(transform.position + (Vector3.up * UpOffset), boxCollider.size * checkScaleMultiplier);
     }
 }
