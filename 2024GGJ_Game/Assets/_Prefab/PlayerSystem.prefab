@@ -90,10 +90,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1856ad82cadd64c0c8f9dc2935efd036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxTreasures: 0
+  currentTreasures: 0
+  GameStarted: 0
   playerControllers:
   - {fileID: 4361392869957783213}
   - {fileID: 6810270763689732158}
   deviceIndex: 0
+  Player1Ready: 0
+  Player2Ready: 0
 --- !u!1 &2658338574136692455
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,6 +453,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_UseGravity
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831240445675656797, guid: 7eb360bfdca85457094732433aa337b9,
+        type: 3}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831240445675656797, guid: 7eb360bfdca85457094732433aa337b9,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831240445675656797, guid: 7eb360bfdca85457094732433aa337b9,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831240445675656797, guid: 7eb360bfdca85457094732433aa337b9,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831240445675656797, guid: 7eb360bfdca85457094732433aa337b9,
+        type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.m_ColorSpace
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4043214543030140474, guid: 7eb360bfdca85457094732433aa337b9,
         type: 3}

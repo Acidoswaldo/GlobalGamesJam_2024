@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Entertaining Variables")]
     public bool entertaining;
+    [SerializeField] ParticleSystem entretainParticles;
 
     [Header("Emperor Variables")]
     [SerializeField] private Emperor emperor;
@@ -92,11 +93,13 @@ public class PlayerController : MonoBehaviour
         {
             canMove = false;
             Debug.Log("Entertaining");
+            entretainParticles.Play();
             emperor.Entretain(currentPickable);
         }
         else
         {
             canMove = true;
+            entretainParticles.Stop();
             emperor.StopEntertainment();
         }
     }
