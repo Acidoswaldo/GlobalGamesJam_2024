@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float acceleration;
     [SerializeField] float rotateSpeed;
     [SerializeField] bool in3D;
+    [SerializeField] ParticleSystem moveParticles;
     Vector3 moveDirection;
     Vector3 lookDirection;
     bool canMove = true;
@@ -87,11 +88,11 @@ public class PlayerController : MonoBehaviour
 
     void UpdateEntertaining()
     {
-        if (entertaining)
+        if (entertaining && currentPickable != null)
         {
             canMove = false;
             Debug.Log("Entertaining");
-            emperor.StartEntertainment();
+            emperor.Entretain(currentPickable);
         }
         else
         {
@@ -123,10 +124,12 @@ public class PlayerController : MonoBehaviour
 
         if (MoveDirection.ReadValue<Vector2>() != Vector2.zero && canMove)
         {
+            if (moveParticles != null) moveParticles.Play();
             animator.SetBool("isWalking", true);
         }
         else
         {
+            if (moveParticles != null) moveParticles.Stop();
             animator.SetBool("isWalking", false);
         }
 
