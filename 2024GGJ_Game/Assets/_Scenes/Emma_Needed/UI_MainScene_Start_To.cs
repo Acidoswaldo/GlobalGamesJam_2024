@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;//Emma_Add the UI Scene
 public class UI_MainScene_Start_To : MonoBehaviour
 {
     private List<GameObject> deactivatedUIObjects = new List<GameObject>();
+    [SerializeField] Animator animator;
 
     private void OnEnable()
     {
@@ -26,6 +27,7 @@ public class UI_MainScene_Start_To : MonoBehaviour
     IEnumerator LoadSceneAfterDelay()
     {
         // Deactivate all objects in the "UI" layer
+        animator.SetBool("isClick", true);
         int uiLayer = LayerMask.NameToLayer("UI");
         foreach (var go in FindObjectsOfType(typeof(GameObject)) as GameObject[])
         {
