@@ -89,7 +89,7 @@ public class UI_MainScene_Start_To : MonoBehaviour
         iconShowLater.SetActive(false);
         iconShowEarly.SetActive(false);
         // Load the scene
-        SceneManager.LoadSceneAsync("Level1");
+        SceneManager.LoadSceneAsync("Level1_Copy");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
