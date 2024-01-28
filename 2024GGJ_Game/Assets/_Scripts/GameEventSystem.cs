@@ -4,13 +4,17 @@ using System.Collections;
 
 public class GameEventSystem : MonoBehaviour
 {
+    public static GameEventSystem Instance;
     [SerializeField] private TextMeshProUGUI gameStartText;
     [SerializeField] private TextMeshProUGUI countdownText;
     [SerializeField] private TextMeshProUGUI gameOverText;
-
     private float gameTime = 180.0f; 
-    private bool gameStarted = false;
-
+    public static bool gameStarted = false;
+    private void Awake()
+    {
+        if (Instance == null) { Instance = this; }
+        else if (Instance != this) Destroy(gameObject);
+    }
     void Start()
     {
        // gameStartText.gameObject.SetActive(true);
@@ -21,11 +25,6 @@ public class GameEventSystem : MonoBehaviour
 
     void Update()
     {
-        // Test
-        if (!gameStarted)
-        {
-            StartGame();
-        }
 
         if (gameStarted)
         {
@@ -43,7 +42,7 @@ public class GameEventSystem : MonoBehaviour
         }     */
     }
 
-    void StartGame()
+    public void StartGame()
     {
         gameStarted = true;
         gameStartText.gameObject.SetActive(false);
