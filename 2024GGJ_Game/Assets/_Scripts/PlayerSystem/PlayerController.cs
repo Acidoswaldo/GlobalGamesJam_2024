@@ -99,13 +99,13 @@ public class PlayerController : MonoBehaviour
             canMove = false;
             UpdateConversationText("interesting!");
             StartCoroutine(InVokeIcon());
-            entretainParticles.Play();
+            //entretainParticles.Play();
             emperor.Entretain(currentPickable);
         }
         else
         {
             canMove = true;
-            entretainParticles.Stop();
+            //entretainParticles.Stop();
             emperor.StopEntertainment();
         }
     }

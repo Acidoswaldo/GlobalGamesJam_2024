@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class Emperor : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class Emperor : MonoBehaviour
     [SerializeField] private Material missingMaterial;
 
     [Header("Entertainment Variables")]
-    [SerializeField] private Slider entertainmentSlider;
+    public Slider entertainmentSlider;
     [SerializeField] List<EntretainmentObject> entretainingObjects = new List<EntretainmentObject>();
     Pickable entretainingPickable;
     public class EntretainmentObject
@@ -47,6 +48,7 @@ public class Emperor : MonoBehaviour
             lineRenderer.startWidth = 0.05f;
             lineRenderer.endWidth = 0.05f;
         }
+        entertainmentSlider = entertainmentSlider.GetComponent<Slider>();
     }
 
     void Update()
