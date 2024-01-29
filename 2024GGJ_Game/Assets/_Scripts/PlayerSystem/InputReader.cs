@@ -14,10 +14,17 @@ public class InputReader : MonoBehaviour
     [SerializeField] PlayerController controller;
     [SerializeField] PlayerController otherController;
 
+    [SerializeField] PlayerController[] players;
+
+    //[SerializeField] 
+
+    //[SerializeField] 
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
-        var players = GameManager.Instance.GetPlayers();
+        //players = GameManager.Instance.GetPlayers();
+        players = GameManager.Instance.playerControllers;
         var index = playerInput.playerIndex;
         PlayerID = index;
         if(index == 0) { GameManager.Instance.SetDeviceIndex(index); otherController = players[index + 1]; }

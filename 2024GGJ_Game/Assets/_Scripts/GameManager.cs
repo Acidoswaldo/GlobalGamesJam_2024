@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     private bool showedText;
 
 
-    [SerializeField] PlayerController[] playerControllers;
+    [SerializeField] public PlayerController[] playerControllers;
     public PlayerController[] GetPlayers() { return playerControllers; }
     public int deviceIndex;
     public bool Player1Ready;
@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("player controllers count" + playerControllers.Length);
         if (Instance == null) { Instance = this; }
         else if (Instance != this) Destroy(gameObject);
     }

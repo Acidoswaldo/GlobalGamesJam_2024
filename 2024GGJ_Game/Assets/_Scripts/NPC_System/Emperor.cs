@@ -51,15 +51,18 @@ public class Emperor : MonoBehaviour
 
     void Update()
     {
+
         if (!playerDetected && !isWaiting && isDetectingTreasure)
         {
+            isDetectingTreasure = true;
             RotateBackAndForth();
             DetectTreasure();
         }
-        else if (playerDetected)
+        else if (playerDetected && entretainingPickable != null)
         {
-            RotateTowardsPlayer();
+           // RotateTowardsPlayer();
         }
+
 
         if (playerDetected && entertainmentSlider != null && entretainingPickable != null)
         {
@@ -74,15 +77,27 @@ public class Emperor : MonoBehaviour
                         entretainingObjects[i].currentEntertainmentTime -= Time.deltaTime;
                         entertainmentSlider.value = entretainingObjects[i].currentEntertainmentTime / entretainingObjects[i].entertainmentDuration;
                         Debug.Log($"currentEntertainmentTime: {entretainingObjects[i].currentEntertainmentTime}, Slider Value: {entertainmentSlider.value}");
+                        isDetectingTreasure = false;
                     }
+
                 }
             }
 
             if (!EntretainingObjectFoundAndNot0)
             {
+                isDetectingTreasure = true;
                 RotateBackAndForth();
+                DetectTreasure();
             }
+
         }
+        if (entertainmentSlider.value == 0)
+        {
+            isDetectingTreasure = true;
+            RotateBackAndForth();
+            DetectTreasure();
+        }
+
     }
 
     void RotateBackAndForth()
@@ -132,7 +147,7 @@ public class Emperor : MonoBehaviour
         {
             playerDetected = true;
             playerTransform = other.transform;
-            isDetectingTreasure = false;
+            isDetectingTreasure = true;
         }
     }
 

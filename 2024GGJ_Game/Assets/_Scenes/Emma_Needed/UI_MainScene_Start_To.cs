@@ -84,10 +84,11 @@ public class UI_MainScene_Start_To : MonoBehaviour
         }
 
         iconShowLater.SetActive(true);
+        iconShowEarly.SetActive(false);
         // Wait for 1 second
         yield return new WaitForSeconds(1);
         iconShowLater.SetActive(false);
-        iconShowEarly.SetActive(false);
+        
         // Load the scene
         SceneManager.LoadSceneAsync("Level1_Copy");
     }

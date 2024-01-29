@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Entertaining Variables")]
     public bool entertaining;
+    public GameObject happyIcon;
     [SerializeField] ParticleSystem entretainParticles;
 
     [Header("Emperor Variables")]
@@ -67,6 +69,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerAvatar = GetComponent<Transform>();
         animator = GetComponent<Animator>();
+        happyIcon.SetActive(false);
         initialized = true;
     }
 
@@ -95,6 +98,7 @@ public class PlayerController : MonoBehaviour
         {
             canMove = false;
             UpdateConversationText("interesting!");
+            StartCoroutine(InVokeIcon());
             entretainParticles.Play();
             emperor.Entretain(currentPickable);
         }
@@ -104,6 +108,13 @@ public class PlayerController : MonoBehaviour
             entretainParticles.Stop();
             emperor.StopEntertainment();
         }
+    }
+
+    private IEnumerator InVokeIcon()
+    {
+        happyIcon.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        happyIcon.SetActive(false);
     }
 
     private void FixedUpdate()
