@@ -40,15 +40,6 @@ public class InputReader : MonoBehaviour
         Debug.Log("Interact performed");
     }
     #endregion Interact
-    #region Slap
-    public void OnSlapPerformed(InputAction.CallbackContext context)
-    {
-        if (controller == null) return;
-        if (!GameEventSystem.gameStarted) return;
-        controller.Slap(context);
-        Debug.Log("Slap performed"); Slap = true;
-    }
-    #endregion Slap
     #region Movement
     public void OnMovementAction(InputAction.CallbackContext context)
     {
@@ -81,16 +72,6 @@ public class InputReader : MonoBehaviour
         Debug.Log("Interact performed");
     }
     #endregion alt Interact
-    #region alt Slap
-    public void OnAltSlapPerformed(InputAction.CallbackContext context)
-    {
-        if (controller == null) return;
-        if (GameManager.Instance.deviceIndex > 0 || otherController == null) return;
-        if (!GameEventSystem.gameStarted) return;
-        otherController.Slap(context);
-        Debug.Log("Slap performed"); Slap = true;
-    }
-    #endregion alt Slap
     #region alt Movement
     public void OnAltMovementAction(InputAction.CallbackContext context)
     {
